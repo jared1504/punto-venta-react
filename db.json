@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "id": 3653,
+      "name": "cat2 act",
+      "price_sale": 4,
+      "price_order": 3,
+      "stock": 43
+    },
+    {
+      "id": 12321,
+      "name": "Nuevo",
+      "price_sale": 12,
+      "price_order": 1234,
+      "stock": 34
+    },
+    {
+      "id": 1,
+      "name": "1 act",
+      "price_sale": 1,
+      "price_order": 1,
+      "stock": 1
+    }
+  ]
+}
