@@ -13,46 +13,34 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
     const [stockServidor, setStockServidor] = useState(false);
     const [messageServidor, setMessageServidor] = useState('');
 
-    useEffect(() => {//ver si hay producto en el carrito
-        if (shoppingCart.length > 0) {
+    useEffect(() => {
+        if (shoppingCart.length) {//hay productos en el carrito
             setCarrito(true);
             let aux = 0;
-            shoppingCart.forEach(pro => {
-                aux += pro.subtotal;
-            });
+            shoppingCart.forEach(pro => aux += pro.subtotal);
             setTotal(aux);
-        } else {
+        } else {//No hay productos en el carrito
             setCarrito(false);
         }
-
     }, [shoppingCart]);
 
-
     const handleSubmit = async ({ id }) => { //buscar producto
-        const proVenta = products.find(pro => { return pro.id === id }); //encontrar el producto
+        const proVenta = products.find(pro => pro.id === id); //encontrar el producto
 
         if (proVenta) {//se encontro el producto
             const { id, name, price_sale } = proVenta;
-            const pro = shoppingCart.find(pro => { return pro.id === id }); //encontrar si el producto ya esta en el carrito
+            const pro = shoppingCart.find(pro => pro.id === id); //encontrar si el producto ya esta en el carrito
 
             if (pro) {//el producto ya esta en el carrito
                 const amount = pro.amount + 1;
-
                 if (amount <= proVenta.stock) {//hay stock suficiente
                     setStockSuficiente(true);
-                    const subtotal = amount * price_sale;
-                    const aux = shoppingCart.map(pro => {
-                        if (pro.id == id) {
-                            return { id, name, price_sale, amount, subtotal };
-                        } else {
-                            return pro;
-                        }
-                    });
-                    setShoppingCart(aux);
+                    pro.amount++;
+                    pro.subtotal = pro.amount * pro.price_sale;
+                    setShoppingCart(shoppingCart.map(pro => pro));
                 } else {//No hay stock suficiente
                     setStockSuficiente(false);
                 }
-
 
             } else {//el producto no esta en el carrito
                 const amount = 1;
@@ -64,14 +52,8 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                     setStockSuficiente(false);
                 }
             }
-        } else {
-            setStockSuficiente(true);
         }
     }
-
-
-
-
 
     const handleSale = async () => { //Generar Venta
         setStockSuficiente(true);
@@ -89,14 +71,13 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                     }
                 });
                 const resul = await resp.json();
-
                 const { success, message } = resul;
                 setMessageServidor(message);
                 setStockServidor(success);
-                setTimeout(() => {
+                setTimeout(() => {//mostrar mensaje por 3 segundos
                     setStockServidor(false);
                     setMessageServidor('');
-                }, 5000);
+                }, 3000);
 
                 if (success) {//venta realizada con exito
 
@@ -118,105 +99,104 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
     }
 
     return (
-        cargando ? <Spinner /> : (
-            <>
-                <h1 className='font-black text-4xl text-blue-900'>Nueva Venta</h1>
-                <p className="mt-3">Genera un Venta</p>
+        <>
+            <h1 className='font-black text-4xl text-blue-900'>Nueva Venta</h1>
+            <p className="mt-3">Genera un Venta</p>
 
-                {/*Buscar producto */}
-                <Formik
-                    initialValues={{ id: '' }}
-                    onSubmit={async (values, { resetForm }) => {
-                        await handleSubmit(values);
-                        resetForm();//limpiar formulario
-                    }}
-                >
-                    {() => {
-                        return (
-                            <Form className='mt-2 mb-2 '>
-                                <div className=" grid grid-cols-3 gap-5">
-                                    <label
-                                        htmlFor="id"
-                                        className='p-3 text-bold text-gray-800 text-lg text-right '
-                                    >Agregar Producto:</label>
-                                    <Field
-                                        id="id"
-                                        type="number"
-                                        className="block w-full p-3 bg-gray-100 text-lg text-center"
-                                        placeholder="Código del Producto"
-                                        name="id"
-                                    />
+            {/*Buscar producto */}
+            <Formik
+                initialValues={{ id: '' }}
+                onSubmit={async (values, { resetForm }) => {
+                    await handleSubmit(values);
+                    resetForm();//limpiar formulario
+                }}
+            >
+                {() => {
+                    return (
+                        <Form className='mt-2 mb-2 '>
+                            <div className=" grid grid-cols-3 gap-5">
+                                <label
+                                    htmlFor="id"
+                                    className='p-3 text-bold text-gray-800 text-lg text-right '
+                                >Agregar Producto:</label>
 
-                                    <input
-                                        type="submit"
-                                        value='Agregar Producto'
-                                        className=" w-full bg-blue-800 p-3 text-white uppercase font-bold text-lg cursor-pointer hover:bg-blue-600"
-                                    />
-                                </div>
-                            </Form>
-                        )
-                    }}
-                </Formik>
-                {/*Fin Buscar producto*/}
+                                <Field
+                                    id="id" name="id" type="number"
+                                    placeholder="Código del Producto"
+                                    className="block w-full p-3 bg-gray-100 text-lg text-center"
+                                />
 
-                {/*Mostrar mensaje del servidor*/}
-                {(stockServidor && messageServidor !== '') ? (
-                    <Success>{messageServidor}</Success>
-                ) : (
-                    (!stockServidor && messageServidor !== '') && <Alerta>{messageServidor}</Alerta>
-                )}
+                                <input
+                                    type="submit" value='Agregar Producto'
+                                    className=" w-full bg-blue-800 p-3 text-white uppercase font-bold text-lg cursor-pointer hover:bg-blue-600"
+                                />
+                            </div>
+                        </Form>
+                    )
+                }}
+            </Formik>
+            {/*Fin Buscar producto*/}
 
-                {!stockSuficiente && <Alerta>No Hay Stock suficiente</Alerta>}
+            {/*Mostrar mensaje del servidor*/}
+            {(stockServidor && messageServidor !== '') ? (
+                <Success>{messageServidor}</Success>
+            ) : (
+                (!stockServidor && messageServidor !== '') && <Alerta>{messageServidor}</Alerta>
+            )}
 
-                {/*Carrito de compra */}
-                {carrito && (
+            {!stockSuficiente && <Alerta>No Hay Stock suficiente</Alerta>}
 
-                    <div className='mt-10'>
-                        <p className="text-6xl mb-5 text-right">Total: <span className="font-bold">${total}</span></p>
+            {/*Carrito de compra */}
+            {carrito && (
 
-                        <Formik
-                            initialValues={{ id: '' }}
-                            onSubmit={async () => { await handleSale(); }}>
-                            {() => {
-                                return (
-                                    <Form >
-                                        <input
-                                            type="submit" value='Generar Venta'
-                                            className=" w-full bg-blue-800 py-5 text-white uppercase font-bold text-3xl cursor-pointer hover:bg-blue-600"
+                <div className='mt-10'>
+                    <p className="text-6xl mb-5 text-right">Total: <span className="font-bold">${total}</span></p>
+                    {cargando ? <Spinner /> : (
+                        <>
+                            <Formik
+                                initialValues={{ id: '' }}
+                                onSubmit={async () => { await handleSale(); }}>
+                                {() => {
+                                    return (
+                                        <Form >
+                                            <input
+                                                type="submit" value='Generar Venta'
+                                                className=" w-full bg-blue-800 py-5 text-white uppercase font-bold text-3xl cursor-pointer hover:bg-blue-600"
+                                            />
+                                        </Form>
+                                    )
+
+                                }}
+                            </Formik>
+
+                            <table className="w-full mt-5 table-auto shadow bg-white">
+                                <thead className="bg-blue-800 text-white">
+                                    <tr>
+                                        <th className="p-2">Cantidad</th>
+                                        <th className="p-2">Nombre</th>
+                                        <th className="p-2">Precio</th>
+                                        <th className="p-2">Subtotal</th>
+                                        <th className="p-2">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="">
+                                    {shoppingCart.map(product => (
+                                        <Product
+                                            key={product.id}
+                                            product={product}
+                                            shoppingCart={shoppingCart}
+                                            setShoppingCart={setShoppingCart}
                                         />
-                                    </Form>
-                                )
-
-                            }}
-                        </Formik>
-
-                        <table className="w-full mt-5 table-auto shadow bg-white">
-                            <thead className="bg-blue-800 text-white">
-                                <tr>
-                                    <th className="p-2">Cantidad</th>
-                                    <th className="p-2">Nombre</th>
-                                    <th className="p-2">Precio</th>
-                                    <th className="p-2">Subtotal</th>
-                                    <th className="p-2">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="">
-                                {shoppingCart.map(product => (
-                                    <Product
-                                        key={product.id}
-                                        product={product}
-                                        shoppingCart={shoppingCart}
-                                        setShoppingCart={setShoppingCart}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )
-                }
-                {/*Fin carrito de compra */}
-            </>
-        )
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
+                    )}
+                </div>
+            )
+            }
+            {/*Fin carrito de compra */}
+        </>
     )
 }
 

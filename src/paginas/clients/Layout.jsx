@@ -5,7 +5,7 @@ const Layout = () => {
     const urlActual = location.pathname;
     return (
         <div>
-            <div className="bg-blue-800 grid grid-cols-2 p-2">
+              <div className="bg-blue-800 grid grid-cols-2 gap-5 p-5">
                 <Link
                     to="/clients">
                     <h2

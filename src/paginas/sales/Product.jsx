@@ -1,7 +1,7 @@
 const Product = ({ product, shoppingCart, setShoppingCart }) => {
 
     const handleDeleteProduct = id => {
-        const aux = shoppingCart.filter(e => { return e.id !== id })
+        const aux = shoppingCart.filter(e => e.id !== id);
         setShoppingCart(aux);
     }
 
@@ -21,9 +21,7 @@ const Product = ({ product, shoppingCart, setShoppingCart }) => {
                 >Eliminar</button>
             </td>
         </tr>
-
     )
-
 }
 
 export default Product
