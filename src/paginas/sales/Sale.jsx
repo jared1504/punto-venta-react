@@ -5,8 +5,8 @@ import Alerta from '../../components/Alerta';
 import Success from '../../components/Success';
 import Spinner from '../../components/Spinner';
 
-const Sale = ({ products, cargando, setCargando,shoppingCart, setShoppingCart }) => {
-   
+const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }) => {
+
     const [carrito, setCarrito] = useState(false);
     const [total, setTotal] = useState(0);
     const [stockSuficiente, setStockSuficiente] = useState(true);

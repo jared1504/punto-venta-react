@@ -1,6 +1,6 @@
 import Formulario from './Formulario'
 
-const NewProduct = (products, setProducts, cargando, setCargando) => {
+const NewProduct = (products, setProducts) => {
     return (
         <div >
             <h1 className='font-black text-4xl text-blue-900'>Nuevo Producto</h1>
@@ -8,10 +8,7 @@ const NewProduct = (products, setProducts, cargando, setCargando) => {
             <Formulario
                 products={products}
                 setProducts={setProducts}
-                cargando={cargando}
-                setCargando={setCargando}
             />
-
         </div>
     )
 }
