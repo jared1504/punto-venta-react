@@ -5,15 +5,16 @@ import Alerta from '../../components/Alerta';
 import Success from '../../components/Success';
 import Spinner from '../../components/Spinner';
 
-const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }) => {
+const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart, sales, setSales, auxSales, setAuxSales }) => {
 
     const [carrito, setCarrito] = useState(false);
     const [total, setTotal] = useState(0);
     const [stockSuficiente, setStockSuficiente] = useState(true);
+    const [productFind, setProductFind] = useState(true);
     const [stockServidor, setStockServidor] = useState(false);
     const [messageServidor, setMessageServidor] = useState('');
 
-    useEffect(() => {
+    useEffect(() => {//mostrar carrito de compras
         if (shoppingCart.length) {//hay productos en el carrito
             setCarrito(true);
             let aux = 0;
@@ -25,11 +26,11 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
     }, [shoppingCart]);
 
     const handleSubmit = async ({ id }) => { //buscar producto
-        const proVenta = products.find(pro => pro.id === id); //encontrar el producto
+        const proVenta = products.find(e => e.id === id); //encontrar el producto
 
         if (proVenta) {//se encontro el producto
             const { id, name, price_sale } = proVenta;
-            const pro = shoppingCart.find(pro => pro.id === id); //encontrar si el producto ya esta en el carrito
+            const pro = shoppingCart.find(e => e.id === id); //encontrar si el producto ya esta en el carrito
 
             if (pro) {//el producto ya esta en el carrito
                 const amount = pro.amount + 1;
@@ -37,9 +38,12 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                     setStockSuficiente(true);
                     pro.amount++;
                     pro.subtotal = pro.amount * pro.price_sale;
-                    setShoppingCart(shoppingCart.map(pro => pro));
+                    setShoppingCart(shoppingCart.map(pro => pro));//actualizar producto en el carrito
                 } else {//No hay stock suficiente
                     setStockSuficiente(false);
+                    setTimeout(() => {
+                        setStockSuficiente(true);
+                    }, 3000);
                 }
 
             } else {//el producto no esta en el carrito
@@ -47,11 +51,16 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                 if (amount <= proVenta.stock) {//hay stock suficiente
                     setStockSuficiente(true);
                     const subtotal = amount * price_sale;
-                    setShoppingCart([...shoppingCart, { id, name, price_sale, amount, subtotal }]);
+                    setShoppingCart([...shoppingCart, { id, name, price_sale, amount, subtotal }]);//agregar producto al carrito
                 } else {//No hay stock suficiente
                     setStockSuficiente(false);
                 }
             }
+        } else {//no se encontro el producto
+            setProductFind(false);//mostrar mensaje
+            setTimeout(() => {
+                setProductFind(true);
+            }, 3000);
         }
     }
 
@@ -71,26 +80,35 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                     }
                 });
                 const resul = await resp.json();
-                const { success, message } = resul;
+                let { success, message, sale } = resul;
                 setMessageServidor(message);
                 setStockServidor(success);
-                setTimeout(() => {//mostrar mensaje por 3 segundos
-                    setStockServidor(false);
-                    setMessageServidor('');
-                }, 3000);
+
 
                 if (success) {//venta realizada con exito
-
                     //disminuir stock de los productos
                     shoppingCart.map(pro => {
                         let aux = products.find(e => e.id === pro.id);
                         aux.stock = aux.stock - pro.amount
-                    })
+                    });
+                    //modificar la fecha que manda el servidor
+                    sale.created_at = sale.created_at.substr(0, 10);
+                    //agregar el carrito de compras 
+                    sale.shoppingCart = shoppingCart;
+                    const aux = [...sales, sale];
+                    setSales(aux);//agregar la venta al state
+                    setAuxSales([...auxSales, aux]);
 
                     //Limpiar carrito 
                     setShoppingCart([]);
                     setCarrito(false);
                 }
+
+                setTimeout(() => {//mostrar mensaje por 3 segundos
+                    setStockServidor(false);
+                    setMessageServidor('');
+                }, 3000);
+
             } catch (error) {
                 console.log(error);
             }
@@ -128,7 +146,7 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
 
                                 <input
                                     type="submit" value='Agregar Producto'
-                                    className=" w-full bg-blue-800 p-3 text-white uppercase font-bold text-lg cursor-pointer hover:bg-blue-600"
+                                    className=" w-full bg-blue-800  p-3 text-white uppercase font-bold text-lg cursor-pointer hover:bg-blue-600"
                                 />
                             </div>
                         </Form>
@@ -138,17 +156,17 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
             {/*Fin Buscar producto*/}
 
             {/*Mostrar mensaje del servidor*/}
-            {(stockServidor && messageServidor !== '') ? (
-                <Success>{messageServidor}</Success>
-            ) : (
-                (!stockServidor && messageServidor !== '') && <Alerta>{messageServidor}</Alerta>
-            )}
+            {stockServidor && messageServidor !== '' ?
+                <Success>{messageServidor}</Success>//mensaje de venta creada
+                :
+                !stockServidor && messageServidor !== '' && <Alerta>{messageServidor}</Alerta>//no hay stock en el servidor
+            }
 
-            {!stockSuficiente && <Alerta>No Hay Stock suficiente</Alerta>}
+            {!stockSuficiente && <Alerta>No Hay Stock suficiente del producto</Alerta>}
+            {!productFind && <Alerta>El producto no está registrado</Alerta>}
 
             {/*Carrito de compra */}
-            {carrito && (
-
+            {carrito && //verificar que hay producto en el carrito y mostrarlo
                 <div className='mt-10'>
                     <p className="text-6xl mb-5 text-right">Total: <span className="font-bold">${total}</span></p>
                     {cargando ? <Spinner /> : (
@@ -161,7 +179,7 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                                         <Form >
                                             <input
                                                 type="submit" value='Generar Venta'
-                                                className=" w-full bg-blue-800 py-5 text-white uppercase font-bold text-3xl cursor-pointer hover:bg-blue-600"
+                                                className=" w-full bg-green-600 py-5 text-white uppercase font-bold text-3xl cursor-pointer hover:bg-green-800"
                                             />
                                         </Form>
                                     )
@@ -180,24 +198,23 @@ const Sale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart }
                                     </tr>
                                 </thead>
                                 <tbody className="">
-                                    {shoppingCart.map(product => (
+                                    {shoppingCart.map(product =>
                                         <Product
                                             key={product.id}
                                             product={product}
                                             shoppingCart={shoppingCart}
                                             setShoppingCart={setShoppingCart}
                                         />
-                                    ))}
+                                    )}
                                 </tbody>
                             </table>
                         </>
                     )}
                 </div>
-            )
             }
             {/*Fin carrito de compra */}
         </>
     )
 }
 
-export default Sale
+export default NewSale

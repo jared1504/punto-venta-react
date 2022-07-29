@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
+import { useParams , useNavigate } from 'react-router-dom';
 
 
 const ViewProduct = ({ products }) => {
@@ -9,16 +8,16 @@ const ViewProduct = ({ products }) => {
   const [product, setProduct] = useState({});
 
   useEffect(() => {
-    const getProductAPI = async () => {
+    const getProduct = async () => {
       //Buscar en el State
-      const auxPro = products.find(prod => prod.id == id);
+      const auxPro = products.find(e => e.id == id);
       if (auxPro) {
         setProduct(auxPro);
       } else {
         navigate(`/products`);
       }
     }
-    getProductAPI();
+    getProduct();
 
   }, []);
 

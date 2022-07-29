@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import Spinner from '../../components/Spinner';
 import Product from './Product';
 import { Formik, Form, Field } from 'formik';
 import Alerta from '../../components/Alerta';
 
-const Products = ({ products, cargando, auxProducts, setAuxProducts }) => {
+const Products = ({ products, auxProducts, setAuxProducts }) => {
 
 
   const [existeProducto, setExisteProducto] = useState(true);
@@ -69,7 +68,6 @@ const Products = ({ products, cargando, auxProducts, setAuxProducts }) => {
       <table className="w-full mt-5 table-auto shadow bg-white">
         <thead className="bg-blue-800 text-white">
           <tr>
-            <th className="p-2">Código</th>
             <th className="p-2">Nombre</th>
             <th className="p-2">Stock</th>
             <th className="p-2">Precio</th>

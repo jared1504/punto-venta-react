@@ -15,8 +15,9 @@ import NewClient from './paginas/clients/NewClient'
 import Clients from './paginas/clients/Clients'
 import EditClient from './paginas/clients/EditClient'
 import ViewClient from './paginas/clients/ViewClient'
-import Sale from './paginas/sales/Sale'
+import NewSale from './paginas/sales/NewSale'
 import Sales from './paginas/sales/Sales'
+import ViewSale from './paginas/sales/ViewSale'
 
 function App() {
 
@@ -24,18 +25,22 @@ function App() {
   const [products, setProducts] = useState(JSON.parse(localStorage.getItem('products')) ?? []);
   //const [products, setProducts] = useState([]);
   const [auxProducts, setAuxProducts] = useState([]);
+  // const [sales, setSales] = useState([]);
+  const [sales, setSales] = useState(JSON.parse(localStorage.getItem('sales')) ?? []);
+  const [auxSales, setAuxSales] = useState([]);
   const [clients, setClients] = useState([]);
-
   const [shoppingCart, setShoppingCart] = useState([]);
-
- 
 
   useEffect(() => {
     localStorage.setItem('products', JSON.stringify(products));
   }, [products]);
 
   useEffect(() => {
-    const obtenerProductosAPI = async () => {
+    localStorage.setItem('sales', JSON.stringify(sales));
+  }, [sales]);
+
+  useEffect(() => {
+    const getProductsAPI = async () => {
       setCargando(true);
       try {
         const url = `${import.meta.env.VITE_API_URL}/products`;
@@ -49,7 +54,7 @@ function App() {
       setCargando(false);
     }
     if (products.length === 0) {
-      obtenerProductosAPI();
+      getProductsAPI();
     }
 
   }, []);
@@ -62,8 +67,6 @@ function App() {
         const resp = await fetch(url);
         const resul = await resp.json();
         setClients(resul);
-
-
       } catch (error) {
         console.log(error);
       }
@@ -75,6 +78,36 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const getSalesAPI = async () => {//obtener todas la ventas de la API
+      setCargando(true);
+      try {
+        const url = `${import.meta.env.VITE_API_URL}/sales`;
+        const resp = await fetch(url);
+        const resul = await resp.json();
+
+        const { success, sales: array } = resul;
+        if (success) {
+          setSales(array);
+        }
+        /** 
+        setProducts(resul);
+        setAuxProducts(resul);*/
+      } catch (error) {
+        console.log(error);
+      }
+      //setCargando(false);
+    }
+    if (sales.length === 0) {
+      getSalesAPI();
+    }
+
+  }, []);
+
+
+
+
+
   return (
     <BrowserRouter>
       <Routes>
@@ -82,19 +115,36 @@ function App() {
           <Route element={<LayoutSales />} >
             <Route index
               element={
-                <Sale
+                <NewSale
                   products={products}
                   setProducts={setProducts}
                   cargando={cargando}
                   setCargando={setCargando}
                   shoppingCart={shoppingCart}
                   setShoppingCart={setShoppingCart}
+                  sales={sales}
+                  setSales={setSales}
+                  auxSales={auxSales}
+                  setAuxSales={setAuxSales}
                 />
               }
             />
 
             <Route path='sales'
-              element={<Sales />}
+              element={
+                <Sales
+                  sales={sales}
+                  auxSales={auxSales}
+                  setAuxSales={setAuxSales}
+                />
+              }
+            />
+            <Route path='sales/:id'
+              element={
+                <ViewSale
+                  sales={sales}
+                />
+              }
             />
 
           </Route>
