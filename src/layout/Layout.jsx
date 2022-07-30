@@ -32,6 +32,14 @@ const Layout = () => {
                         ${urlActual == '/clients/new' ? 'text-white bg-blue-500 hover:text-white' : 'text-white'}
                          font-bold text-white text-2xl block mt-2 hover:text-blue-300 p-2 rounded-lg  text-center`}
                     >Clientes</Link>
+
+                    <Link
+                        to="/orders/new"
+                        className={`${urlActual == '/orders/new' ? 'text-white bg-blue-500 hover:text-white' : 'text-white'} 
+                        ${urlActual == '/orders' ? 'text-white bg-blue-500 hover:text-white' : 'text-white'}
+                         font-bold text-white text-2xl block mt-2 hover:text-blue-300 p-2 rounded-lg  text-center`}
+                    >Pedidos</Link>
+
                 </nav>
             </div>
             <div className="md:w-3/4  md:h-screen md:overflow-scroll">

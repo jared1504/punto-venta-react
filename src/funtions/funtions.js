@@ -29,6 +29,7 @@ export const formatMoney = value => {//da formato a cantidades de dinero
 }
 export const formatDate = (date) => {
     const fecha = new Date(date);
+    fecha.setDate(fecha.getDate() + 1);//aumentar un dia porque resateba un dia a la fecha
     const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return (fecha.toLocaleDateString('es-us', opciones));
 }

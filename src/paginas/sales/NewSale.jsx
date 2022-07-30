@@ -26,6 +26,7 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
     }, [shoppingCart]);
 
     const handleSubmit = async ({ id }) => { //buscar producto
+        //console.log(sales)
         const proVenta = products.find(e => e.id === id); //encontrar el producto
 
         if (proVenta) {//se encontro el producto
@@ -68,13 +69,12 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
         setStockSuficiente(true);
         if (shoppingCart.length) {//hay productos en el carrito
             const user_id = 1;//CAMBIAR CUANDO YA HAYA AUTENTICACION
-            const valores = { user_id, shoppingCart };
             setCargando(true);//mostrar Spinner de carga
             try {
                 const url = `${import.meta.env.VITE_API_URL}/sales/store`;
                 const resp = await fetch(url, {
                     method: 'POST',
-                    body: JSON.stringify(valores),
+                    body: JSON.stringify({shoppingCart}),
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -91,8 +91,6 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
                         let aux = products.find(e => e.id === pro.id);
                         aux.stock = aux.stock - pro.amount
                     });
-                    //modificar la fecha que manda el servidor
-                    sale.created_at = sale.created_at.substr(0, 10);
                     //agregar el carrito de compras 
                     sale.shoppingCart = shoppingCart;
                     const aux = [...sales, sale];
@@ -169,7 +167,7 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
             {carrito && //verificar que hay producto en el carrito y mostrarlo
                 <div className='mt-10'>
                     <p className="text-6xl mb-5 text-right">Total: <span className="font-bold">${total}</span></p>
-                    {cargando ? <Spinner /> : (
+                    {cargando ? <Spinner /> : 
                         <>
                             <Formik
                                 initialValues={{ id: '' }}
@@ -209,7 +207,7 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
                                 </tbody>
                             </table>
                         </>
-                    )}
+                    }
                 </div>
             }
             {/*Fin carrito de compra */}

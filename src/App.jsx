@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './layout/Layout'
 
-import LayoutSales from './paginas/sales/Layout'
-
 import LayoutProducts from './paginas/products/Layout'
 import Products from './paginas/products/Products'
 import NewProduct from './paginas/products/NewProduct'
@@ -15,9 +13,16 @@ import NewClient from './paginas/clients/NewClient'
 import Clients from './paginas/clients/Clients'
 import EditClient from './paginas/clients/EditClient'
 import ViewClient from './paginas/clients/ViewClient'
+
+import LayoutSales from './paginas/sales/Layout'
 import NewSale from './paginas/sales/NewSale'
 import Sales from './paginas/sales/Sales'
 import ViewSale from './paginas/sales/ViewSale'
+
+import LayoutOrders from './paginas/orders/Layout'
+import NewOrder from './paginas/orders/NewOrder'
+import Orders from './paginas/orders/Orders'
+import ViewOrder from './paginas/orders/ViewOrder'
 
 function App() {
 
@@ -28,8 +33,11 @@ function App() {
   // const [sales, setSales] = useState([]);
   const [sales, setSales] = useState(JSON.parse(localStorage.getItem('sales')) ?? []);
   const [auxSales, setAuxSales] = useState([]);
+  const [orders, setOrders] = useState(JSON.parse(localStorage.getItem('orders')) ?? []);
+  const [auxOrders, setAuxOrders] = useState([]);
   const [clients, setClients] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
+  const [orderCart, setOrderCart] = useState([]);
 
   useEffect(() => {
     localStorage.setItem('products', JSON.stringify(products));
@@ -38,6 +46,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('sales', JSON.stringify(sales));
   }, [sales]);
+
+  useEffect(() => {
+    localStorage.setItem('orders', JSON.stringify(orders));
+  }, [orders]);
 
   useEffect(() => {
     const getProductsAPI = async () => {
@@ -90,13 +102,9 @@ function App() {
         if (success) {
           setSales(array);
         }
-        /** 
-        setProducts(resul);
-        setAuxProducts(resul);*/
       } catch (error) {
         console.log(error);
       }
-      //setCargando(false);
     }
     if (sales.length === 0) {
       getSalesAPI();
@@ -104,9 +112,27 @@ function App() {
 
   }, []);
 
+  useEffect(() => {
+    const getOrdersAPI = async () => {//obtener todos los pedidos de la API
+      setCargando(true);
+      try {
+        const url = `${import.meta.env.VITE_API_URL}/orders`;
+        const resp = await fetch(url);
+        const resul = await resp.json();
+        console.log(resul)
+        const { success, orders: array } = resul;
+        if (success) {
+          setOrders(array);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (orders.length === 0) {
+      getOrdersAPI();
+    }
 
-
-
+  }, []);
 
   return (
     <BrowserRouter>
@@ -150,7 +176,42 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="/products" element={<Layout />}>
+        <Route path='orders' element={<Layout />}>
+          <Route element={<LayoutOrders />} >
+            <Route path='new'
+              element={
+                <NewOrder
+                  products={products}
+                  orders={orders}
+                  setOrders={setOrders}
+                  auxOrders={auxOrders}
+                  setAuxOrders={setAuxOrders}
+                  orderCart={orderCart}
+                  setOrderCart={setOrderCart}
+                />
+              }
+            />
+
+            <Route index
+              element={
+                <Orders
+                  orders={orders}
+                  auxOrders={auxOrders}
+                  setAuxOrders={setAuxOrders}
+                />
+              }
+            />
+            <Route path=':id'
+              element={
+                <ViewOrder
+                  orders={orders}
+                />
+              }
+            />
+          </Route>
+        </Route>
+
+        <Route path="products" element={<Layout />}>
           <Route element={<LayoutProducts />} >
             <Route index
               element=
@@ -191,7 +252,7 @@ function App() {
         </Route>
 
 
-        <Route path="/clients" element={<Layout />}>
+        <Route path="clients" element={<Layout />}>
           <Route element={<LayoutClientes />} >
             <Route index
               element=

@@ -1,27 +1,28 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate, formatMoney } from '../../funtions/funtions';
-import ProductSale from './ProductSale';
+import ProductOrder from './ProductOrder';
+//import ProductSale from './ProductSale';
 
-const ViewSale = ({ sales }) => {
+const ViewOrder = ({ orders }) => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [sale, setSale] = useState({});
-    const [shoppingCart, setShoppingCart] = useState([]);
-    const { user_name, hour, total } = sale;
+    const [order, setOrder] = useState({});
+    const [orderCart, setOrderCart] = useState([]);
+    const { user_name, hour, total } = order;
     const [fecha, setFecha] = useState('');
     useEffect(() => {//buscar la venta
-        const getSale = async () => {
-            const aux = sales.find(e => e.id == id);
+        const getOrder = async () => {
+            const aux = orders.find(e => e.id == id);
             if (aux) {
-                setSale(aux);
-                setShoppingCart(aux.shoppingCart);
+                setOrder(aux);
+                setOrderCart(aux.orderCart);
                 setFecha(formatDate(aux.date));
             } else {//redireccionar si no se encontro la venta
-                navigate('/sales');
+                navigate('/orders');
             }
         }
-        getSale();
+        getOrder();
     }, []);
 
 
@@ -69,12 +70,12 @@ const ViewSale = ({ sales }) => {
                     </tr>
                 </thead>
                 <tbody className="">
-                    {shoppingCart.map((product) =>
-                        <ProductSale
+                    {orderCart.map((product) =>
+                        <ProductOrder
                             key={product.id}
                             product={product}
                         />
-                    )}
+    )}
 
                 </tbody>
             </table>
@@ -82,4 +83,4 @@ const ViewSale = ({ sales }) => {
     )
 }
 
-export default ViewSale
+export default ViewOrder
