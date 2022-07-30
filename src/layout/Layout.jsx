@@ -1,8 +1,40 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { Formik, Form, Field } from 'formik';
+import { useState } from 'react';
+import Spinner from '../components/Spinner';
 
-const Layout = () => {
+const Layout = ({ user, token, setUser, setToken }) => {
+    const [cargando, setCargando] = useState(false);
+    const navigate = useNavigate();
     const location = useLocation();
     const urlActual = location.pathname;
+    if (!user.name) {
+        navigate('/login');//redireccionar
+    }
+
+    const Logout = async () => {
+        setCargando(true);
+        try {
+            const url = `${import.meta.env.VITE_API_URL}/logout`;
+            const resp = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+            );
+            const resul = await resp.json();
+            const { success } = resul;
+            if (success) {//reiniciar valores
+                setUser({});
+                setToken('');
+                navigate('/login');//redireccionar
+            }
+        } catch (error) {
+
+        }
+    }
 
     return (
         <div className="md:flex md:min-h-screen">
@@ -39,7 +71,27 @@ const Layout = () => {
                         ${urlActual == '/orders' ? 'text-white bg-blue-500 hover:text-white' : 'text-white'}
                          font-bold text-white text-2xl block mt-2 hover:text-blue-300 p-2 rounded-lg  text-center`}
                     >Pedidos</Link>
-
+                    <h2 className="text-2xl md:mt-20 mt-5  text-center text-white">Hola {user.name}</h2>
+                    {cargando ?
+                        <div className="bg-red-600 rounded-lg p-3 mt-5">
+                            <Spinner />
+                            <p className="  mt-5 text-white uppercase font-bold text-center text-lg">Cerrando Sesión</p>
+                        </div>
+                        :
+                        <Formik
+                            initialValues={{}}
+                            onSubmit={() => Logout()}
+                        >
+                            {() =>
+                                <Form>
+                                    <input
+                                        type="submit" value='Cerrar Sesión'
+                                        className="mt-5 w-full rounded-lg bg-red-600 hover:bg-red-800 cursor-pointer p-3 text-white uppercase font-bold text-lg"
+                                    />
+                                </Form>
+                            }
+                        </Formik>
+                    }
                 </nav>
             </div>
             <div className="md:w-3/4  md:h-screen md:overflow-scroll">

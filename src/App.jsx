@@ -23,10 +23,13 @@ import LayoutOrders from './paginas/orders/Layout'
 import NewOrder from './paginas/orders/NewOrder'
 import Orders from './paginas/orders/Orders'
 import ViewOrder from './paginas/orders/ViewOrder'
+import Login from './paginas/login/Login'
 
 function App() {
 
   const [cargando, setCargando] = useState(false);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) ?? {});
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem('token')) ?? '');
   const [products, setProducts] = useState(JSON.parse(localStorage.getItem('products')) ?? []);
   //const [products, setProducts] = useState([]);
   const [auxProducts, setAuxProducts] = useState([]);
@@ -38,6 +41,14 @@ function App() {
   const [clients, setClients] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
   const [orderCart, setOrderCart] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem('token', JSON.stringify(token));
+  }, [token]);
 
   useEffect(() => {
     localStorage.setItem('products', JSON.stringify(products));
@@ -137,7 +148,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Layout />}>
+        <Route path='/login'>
+          <Route index
+            element={
+              <Login
+                setUser={setUser}
+                setToken={setToken}
+              />
+            }
+          />
+        </Route>
+
+        <Route path='/' element={
+          <Layout
+            user={user}
+            token={token}
+            setUser={setUser}
+            setToken={setToken}
+          />
+        }>
           <Route element={<LayoutSales />} >
             <Route index
               element={
@@ -176,7 +205,14 @@ function App() {
           </Route>
         </Route>
 
-        <Route path='orders' element={<Layout />}>
+        <Route path='orders' element={
+          <Layout
+            user={user}
+            token={token}
+            setUser={setUser}
+            setToken={setToken}
+          />
+        }>
           <Route element={<LayoutOrders />} >
             <Route path='new'
               element={
@@ -211,7 +247,14 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="products" element={<Layout />}>
+        <Route path="products" element={
+          <Layout
+            user={user}
+            token={token}
+            setUser={setUser}
+            setToken={setToken}
+          />
+        }>
           <Route element={<LayoutProducts />} >
             <Route index
               element=
@@ -252,7 +295,14 @@ function App() {
         </Route>
 
 
-        <Route path="clients" element={<Layout />}>
+        <Route path="clients" element={
+          <Layout
+            user={user}
+            token={token}
+            setUser={setUser}
+            setToken={setToken}
+          />
+        }>
           <Route element={<LayoutClientes />} >
             <Route index
               element=
