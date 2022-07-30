@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Navigate, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import Alerta from '../../components/Alerta';
 import Spinner from '../../components/Spinner';
 
-const Login = ({ setUser, setToken }) => {
+const Login = ({ user, setUser, setToken }) => {
     const [cargando, setCargando] = useState(false);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {//redireccionar si hay una sesion iniciada
+        user.name && navigate('/');
+    }, [])
 
     const newLoginSchema = Yup.object().shape({
         email: Yup.string()
@@ -40,7 +44,7 @@ const Login = ({ setUser, setToken }) => {
             setTimeout(() => {
                 setMessage('');
             }, 5000);
-            
+
         }
         setCargando(false);
 

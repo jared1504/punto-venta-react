@@ -152,6 +152,7 @@ function App() {
           <Route index
             element={
               <Login
+                user={user}
                 setUser={setUser}
                 setToken={setToken}
               />
