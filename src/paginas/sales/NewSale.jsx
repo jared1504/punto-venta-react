@@ -5,7 +5,7 @@ import Alerta from '../../components/Alerta';
 import Success from '../../components/Success';
 import Spinner from '../../components/Spinner';
 
-const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCart, sales, setSales, auxSales, setAuxSales }) => {
+const NewSale = ({ token, products, cargando, setCargando, shoppingCart, setShoppingCart, sales, setSales, auxSales, setAuxSales }) => {
 
     const [carrito, setCarrito] = useState(false);
     const [total, setTotal] = useState(0);
@@ -74,9 +74,10 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
                 const url = `${import.meta.env.VITE_API_URL}/sales/store`;
                 const resp = await fetch(url, {
                     method: 'POST',
-                    body: JSON.stringify({shoppingCart}),
+                    body: JSON.stringify({ shoppingCart }),
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 const resul = await resp.json();
@@ -167,7 +168,7 @@ const NewSale = ({ products, cargando, setCargando, shoppingCart, setShoppingCar
             {carrito && //verificar que hay producto en el carrito y mostrarlo
                 <div className='mt-10'>
                     <p className="text-6xl mb-5 text-right">Total: <span className="font-bold">${total}</span></p>
-                    {cargando ? <Spinner /> : 
+                    {cargando ? <Spinner /> :
                         <>
                             <Formik
                                 initialValues={{ id: '' }}

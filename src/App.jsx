@@ -67,7 +67,12 @@ function App() {
       setCargando(true);
       try {
         const url = `${import.meta.env.VITE_API_URL}/products`;
-        const resp = await fetch(url);
+        const resp = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const resul = await resp.json();
         setProducts(resul);
         setAuxProducts(resul);
@@ -87,7 +92,12 @@ function App() {
       setCargando(true);
       try {
         const url = `${import.meta.env.VITE_API_URL}/clients`;
-        const resp = await fetch(url);
+        const resp = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const resul = await resp.json();
         setClients(resul);
       } catch (error) {
@@ -106,7 +116,12 @@ function App() {
       setCargando(true);
       try {
         const url = `${import.meta.env.VITE_API_URL}/sales`;
-        const resp = await fetch(url);
+        const resp = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const resul = await resp.json();
 
         const { success, sales: array } = resul;
@@ -128,9 +143,14 @@ function App() {
       setCargando(true);
       try {
         const url = `${import.meta.env.VITE_API_URL}/orders`;
-        const resp = await fetch(url);
+        const resp = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const resul = await resp.json();
-        console.log(resul)
+        //console.log(resul)
         const { success, orders: array } = resul;
         if (success) {
           setOrders(array);
@@ -172,6 +192,7 @@ function App() {
             <Route index
               element={
                 <NewSale
+                  token={token}
                   products={products}
                   setProducts={setProducts}
                   cargando={cargando}
@@ -218,6 +239,7 @@ function App() {
             <Route path='new'
               element={
                 <NewOrder
+                  token={token}
                   products={products}
                   orders={orders}
                   setOrders={setOrders}
@@ -270,6 +292,7 @@ function App() {
             <Route path='new'
               element=
               {<NewProduct
+                token={token}
                 products={products}
                 setProducts={setProducts}
                 cargando={cargando}
@@ -280,6 +303,7 @@ function App() {
             <Route path='edit/:id'
               element=
               {<EditProduct
+                token={token}
                 products={products}
                 setProducts={setProducts}
               />}
@@ -318,6 +342,7 @@ function App() {
             <Route path='new'
               element=
               {<NewClient
+                token={token}
                 clients={clients}
                 setClients={setClients}
               />}
@@ -326,6 +351,7 @@ function App() {
             <Route path='edit/:id'
               element=
               {<EditClient
+                token={token}
                 clients={clients}
                 setClients={setClients}
               />}

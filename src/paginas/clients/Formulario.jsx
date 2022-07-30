@@ -8,7 +8,7 @@ import Spinner from '../../components/Spinner';
 
 
 
-const Formulario = ({ client, cargando, clients, setClients }) => {
+const Formulario = ({ token, client, cargando, clients, setClients }) => {
 
     const [respAPI, setRespAPI] = useState(true);
     const [idValido, setIdValido] = useState(true);
@@ -34,7 +34,8 @@ const Formulario = ({ client, cargando, clients, setClients }) => {
                     method: 'PUT',
                     body: JSON.stringify(valores),
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -42,7 +43,7 @@ const Formulario = ({ client, cargando, clients, setClients }) => {
                 const arrayClients = clients.map(cli => {
                     if (cli.id == client.id) {
                         //previene que se cambien el id del cliente
-                        valores.id=cli.id;
+                        valores.id = cli.id;
                         return valores;
                     } else {
                         return cli;
@@ -60,7 +61,8 @@ const Formulario = ({ client, cargando, clients, setClients }) => {
                     method: 'POST',
                     body: JSON.stringify(valores),
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 

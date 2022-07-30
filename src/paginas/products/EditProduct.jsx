@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 
 
-const EditProduct = ({ products, setProducts }) => {
+const EditProduct = ({ token, products, setProducts }) => {
 
     const { id } = useParams();
     const [product, setProduct] = useState({});
@@ -30,6 +30,7 @@ const EditProduct = ({ products, setProducts }) => {
             <p className="mt-3">Edita los datos de un Producto</p>
 
             < Formulario
+                token={token}
                 product={product}
                 products={products}
                 setProducts={setProducts}

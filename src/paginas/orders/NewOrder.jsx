@@ -8,7 +8,7 @@ import Product from './Product';
 
 
 
-const NewOrder = ({ products, orders, setOrders, auxOrders, setAuxOrders, orderCart, setOrderCart }) => {
+const NewOrder = ({ token, products, orders, setOrders, auxOrders, setAuxOrders, orderCart, setOrderCart }) => {
   const [cargando, setCargando] = useState(false);
   const [total, setTotal] = useState(0);
   const [message, setMessage] = useState('');
@@ -79,7 +79,8 @@ const NewOrder = ({ products, orders, setOrders, auxOrders, setAuxOrders, orderC
           method: 'POST',
           body: JSON.stringify({ orderCart }),
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           }
         });
         const resul = await resp.json();

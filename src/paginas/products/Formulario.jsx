@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import Alerta from '../../components/Alerta';
 import Spinner from '../../components/Spinner';
 
-const Formulario = ({ product, products, setProducts }) => {
+const Formulario = ({ token, product, products, setProducts }) => {
 
     const [cargando, setCargando] = useState(false);
     const [respAPI, setRespAPI] = useState(false);
@@ -39,7 +39,8 @@ const Formulario = ({ product, products, setProducts }) => {
                     method: 'PUT',
                     body: JSON.stringify(valores),
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -64,7 +65,8 @@ const Formulario = ({ product, products, setProducts }) => {
                     method: 'POST',
                     body: JSON.stringify(valores),
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 const resul = await resp.json();
@@ -117,21 +119,21 @@ const Formulario = ({ product, products, setProducts }) => {
                                     htmlFor="id"
                                     className='text-gray-800 text-xl'
                                 >Código:</label>
-                                {product?.name ? (
+                                {product?.name ?
                                     //editar -> no se puede cambiar el id
                                     <Field
                                         disabled id="id" name="id" type="number"
                                         placeholder="Código del Producto"
                                         className="mt-2 block w-full p-3 bg-gray-100"
                                     />
-                                ) : (
+                                    :
                                     //crear
                                     <Field
                                         id="id" name="id" type="number"
                                         placeholder="Código del Producto"
                                         className="mt-2 block w-full p-3 bg-gray-100"
                                     />
-                                )}
+                                }
 
                                 {!idValido && <Alerta>El código ya es usado por otro Producto</Alerta>}
                                 {(errors.id && touched.id) && <Alerta>{errors.id}</Alerta>}
@@ -189,16 +191,16 @@ const Formulario = ({ product, products, setProducts }) => {
                                 />
                                 {(errors.stock && touched.stock) && <Alerta>{errors.stock}</Alerta>}
                             </div>
-                            {cargando ? (
+                            {cargando ?
                                 <div className="mt-10">
                                     <Spinner />
                                 </div>
-                            ) : (
+                                :
                                 <input
                                     type="submit" value={product?.name ? 'Actualizar Producto' : 'Agregar Producto'}
                                     className="mt-5 w-full bg-blue-800 hover:bg-blue-600 cursor-pointer p-3 text-white uppercase font-bold text-lg"
                                 />
-                            )}
+                            }
 
 
                         </Form>

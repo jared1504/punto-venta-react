@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 
 
-const EditClient = ({ clients, setClients }) => {
+const EditClient = ({ token, clients, setClients }) => {
 
     const { id } = useParams();
     const [client, setClient] = useState({});
@@ -50,9 +50,10 @@ const EditClient = ({ clients, setClients }) => {
             <>
                 <h1 className='font-black text-4xl text-blue-900'>Editar Cliente</h1>
                 <p className="mt-3">Edita los datos de un Cliente</p>
-                {client?.name ? (
+                {client?.name ?
 
                     < Formulario
+                        token={token}
                         client={client}
                         cargando={cargando}
                         clients={clients}
@@ -61,8 +62,9 @@ const EditClient = ({ clients, setClients }) => {
                         setAuxClients={setAuxClients}
                     />
 
-                ) : navigate('/clients')}
-            </>}
+                    : navigate('/clients')}
+            </>
+        }
         </>
     )
 }
