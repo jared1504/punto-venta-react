@@ -4,7 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import { useEffect, useState } from 'react';
 import Spinner from '../components/Spinner';
 
-const Layout = ({ user, token, setUser, setToken, setProducts, setSales, setOrders, setClients }) => {
+const Layout = ({ user, token, setUser, setToken, setProducts, setSales, setOrders}) => {
     const [cargando, setCargando] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -32,7 +32,6 @@ const Layout = ({ user, token, setUser, setToken, setProducts, setSales, setOrde
                 setProducts([]);
                 setSales([]);
                 setOrders([]);
-                setClients([]);
                 setUser({});
                 setToken('');
                 navigate('/login');//redireccionar
@@ -64,12 +63,6 @@ const Layout = ({ user, token, setUser, setToken, setProducts, setSales, setOrde
                          font-bold text-white text-2xl block mt-2 hover:text-blue-300 p-2 rounded-lg  text-center`}
                     >Productos</Link>
 
-                    <Link
-                        to="/clients"
-                        className={`${urlActual == '/clients' ? 'text-white bg-blue-500 hover:text-white' : 'text-white'} 
-                        ${urlActual == '/clients/new' ? 'text-white bg-blue-500 hover:text-white' : 'text-white'}
-                         font-bold text-white text-2xl block mt-2 hover:text-blue-300 p-2 rounded-lg  text-center`}
-                    >Clientes</Link>
 
                     <Link
                         to="/orders/new"

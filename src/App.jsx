@@ -8,11 +8,6 @@ import NewProduct from './paginas/products/NewProduct'
 import EditProduct from './paginas/products/EditProduct'
 import ViewProduct from './paginas/products/ViewProduct'
 
-import LayoutClientes from './paginas/clients/Layout'
-import NewClient from './paginas/clients/NewClient'
-import Clients from './paginas/clients/Clients'
-import EditClient from './paginas/clients/EditClient'
-import ViewClient from './paginas/clients/ViewClient'
 
 import LayoutSales from './paginas/sales/Layout'
 import NewSale from './paginas/sales/NewSale'
@@ -25,7 +20,7 @@ import Orders from './paginas/orders/Orders'
 import ViewOrder from './paginas/orders/ViewOrder'
 import Login from './paginas/login/Login'
 
-import { getClientsAPI, getOrdersAPI, getProductsAPI, getSalesAPI } from './funtions/GetDataAPI'
+import { getOrdersAPI, getProductsAPI, getSalesAPI } from './funtions/GetDataAPI'
 
 function App() {
 
@@ -40,7 +35,6 @@ function App() {
   const [auxSales, setAuxSales] = useState([]);
   const [orders, setOrders] = useState(JSON.parse(localStorage.getItem('orders')) ?? []);
   const [auxOrders, setAuxOrders] = useState([]);
-  const [clients, setClients] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
   const [orderCart, setOrderCart] = useState([]);
 
@@ -52,10 +46,6 @@ function App() {
       setProducts(aux);
     }
 
-    if (clients.length === 0) {
-      aux = await getClientsAPI(token);
-      setClients(aux);
-    }
     if (sales.length === 0) {
       aux = await getSalesAPI(token);
       setSales(aux);
@@ -94,110 +84,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('orders', JSON.stringify(orders));
   }, [orders]);
-  /** 
-    useEffect(() => {
-      const getProductsAPI = async () => {
-        setCargando(true);
-        try {
-          const url = `${import.meta.env.VITE_API_URL}/products`;
-          const resp = await fetch(url, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const resul = await resp.json();
-          setProducts(resul);
-          setAuxProducts(resul);
-        } catch (error) {
-          console.log(error);
-        }
-        setCargando(false);
-      }
-      if (products.length === 0) {
-        getProductsAPI();
-      }
-  
-    }, []);
-  
-    useEffect(() => {
-      const getClientsAPI = async () => {
-        setCargando(true);
-        try {
-          const url = `${import.meta.env.VITE_API_URL}/clients`;
-          const resp = await fetch(url, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const resul = await resp.json();
-          setClients(resul);
-        } catch (error) {
-          console.log(error);
-        }
-        setCargando(false);
-      };
-  
-      if (clients.length === 0) {
-        getClientsAPI();
-      }
-    }, []);
-  
-    useEffect(() => {
-      const getSalesAPI = async () => {//obtener todas la ventas de la API
-        setCargando(true);
-        try {
-          const url = `${import.meta.env.VITE_API_URL}/sales`;
-          const resp = await fetch(url, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const resul = await resp.json();
-  
-          const { success, sales: array } = resul;
-          if (success) {
-            setSales(array);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      if (sales.length === 0) {
-        getSalesAPI();
-      }
-  
-    }, []);
-  
-    useEffect(() => {
-      const getOrdersAPI = async () => {//obtener todos los pedidos de la API
-        setCargando(true);
-        try {
-          const url = `${import.meta.env.VITE_API_URL}/orders`;
-          const resp = await fetch(url, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const resul = await resp.json();
-          //console.log(resul)
-          const { success, orders: array } = resul;
-          if (success) {
-            setOrders(array);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      if (orders.length === 0) {
-        getOrdersAPI();
-      }
-  
-    }, []);
-  */
+
   return (
     <BrowserRouter>
       <Routes>
@@ -222,7 +109,6 @@ function App() {
             setProducts={setProducts}
             setSales={setSales}
             setOrders={setOrders}
-            setClients={setClients}
           />
         }>
           <Route element={<LayoutSales />} >
@@ -273,7 +159,6 @@ function App() {
             setProducts={setProducts}
             setSales={setSales}
             setOrders={setOrders}
-            setClients={setClients}
           />
         }>
           <Route element={<LayoutOrders />} >
@@ -320,7 +205,6 @@ function App() {
             setProducts={setProducts}
             setSales={setSales}
             setOrders={setOrders}
-            setClients={setClients}
           />
         }>
           <Route element={<LayoutProducts />} >
@@ -364,58 +248,6 @@ function App() {
           </Route>
         </Route>
 
-
-        <Route path="clients" element={
-          <Layout
-            user={user}
-            token={token}
-            setUser={setUser}
-            setToken={setToken}
-            setProducts={setProducts}
-            setSales={setSales}
-            setOrders={setOrders}
-            setClients={setClients}
-          />
-        }>
-          <Route element={<LayoutClientes />} >
-            <Route index
-              element=
-              {<Clients
-                clients={clients}
-                setClients={setClients}
-                cargando={cargando}
-                setCargando={setCargando}
-              />}
-            />
-
-            <Route path='new'
-              element=
-              {<NewClient
-                token={token}
-                clients={clients}
-                setClients={setClients}
-              />}
-            />
-
-            <Route path='edit/:id'
-              element=
-              {<EditClient
-                token={token}
-                clients={clients}
-                setClients={setClients}
-              />}
-            />
-
-            <Route path=':id'
-              element=
-              {<ViewClient
-                clients={clients}
-              />}
-            />
-
-
-          </Route>
-        </Route>
       </Routes>
     </BrowserRouter>
   )

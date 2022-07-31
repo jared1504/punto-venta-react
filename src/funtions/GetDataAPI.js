@@ -19,21 +19,6 @@ export const getProductsAPI = async (token) => {
 
 }
 
-export const getClientsAPI = async (token) => {
-    try {
-        const url = `${import.meta.env.VITE_API_URL}/clients`;
-        const resp = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        const resul = await resp.json();
-        return resul;
-    } catch (error) {
-        console.log(error);
-    }
-};
 
 export const getSalesAPI = async (token) => {//obtener todas la ventas de la API
     try {
