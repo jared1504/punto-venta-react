@@ -25,6 +25,8 @@ import Orders from './paginas/orders/Orders'
 import ViewOrder from './paginas/orders/ViewOrder'
 import Login from './paginas/login/Login'
 
+import { getClientsAPI, getOrdersAPI, getProductsAPI, getSalesAPI } from './funtions/GetDataAPI'
+
 function App() {
 
   const [cargando, setCargando] = useState(false);
@@ -42,6 +44,37 @@ function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
   const [orderCart, setOrderCart] = useState([]);
 
+  const getData = async () => {//asignar valores al state
+    let aux;
+    if (products.length === 0) {
+      console.log('consulta')
+      aux = await getProductsAPI(token);
+      setProducts(aux);
+    }
+
+    if (clients.length === 0) {
+      aux = await getClientsAPI(token);
+      setClients(aux);
+    }
+    if (sales.length === 0) {
+      aux = await getSalesAPI(token);
+      setSales(aux);
+    }
+    if (orders.length === 0) {
+      aux = await getOrdersAPI(token);
+      setOrders(aux);
+    }
+
+
+  }
+
+  useEffect(() => {
+    if (token !== '') {//El Usuario inicio sesión
+      getData();//Obtener la data de la API
+    }
+  }, [])
+
+
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
@@ -49,7 +82,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem('token', JSON.stringify(token));
   }, [token]);
-
+  /** */
   useEffect(() => {
     localStorage.setItem('products', JSON.stringify(products));
   }, [products]);
@@ -61,110 +94,110 @@ function App() {
   useEffect(() => {
     localStorage.setItem('orders', JSON.stringify(orders));
   }, [orders]);
-
-  useEffect(() => {
-    const getProductsAPI = async () => {
-      setCargando(true);
-      try {
-        const url = `${import.meta.env.VITE_API_URL}/products`;
-        const resp = await fetch(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const resul = await resp.json();
-        setProducts(resul);
-        setAuxProducts(resul);
-      } catch (error) {
-        console.log(error);
-      }
-      setCargando(false);
-    }
-    if (products.length === 0) {
-      getProductsAPI();
-    }
-
-  }, []);
-
-  useEffect(() => {
-    const getClientsAPI = async () => {
-      setCargando(true);
-      try {
-        const url = `${import.meta.env.VITE_API_URL}/clients`;
-        const resp = await fetch(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const resul = await resp.json();
-        setClients(resul);
-      } catch (error) {
-        console.log(error);
-      }
-      setCargando(false);
-    };
-
-    if (clients.length === 0) {
-      getClientsAPI();
-    }
-  }, []);
-
-  useEffect(() => {
-    const getSalesAPI = async () => {//obtener todas la ventas de la API
-      setCargando(true);
-      try {
-        const url = `${import.meta.env.VITE_API_URL}/sales`;
-        const resp = await fetch(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const resul = await resp.json();
-
-        const { success, sales: array } = resul;
-        if (success) {
-          setSales(array);
+  /** 
+    useEffect(() => {
+      const getProductsAPI = async () => {
+        setCargando(true);
+        try {
+          const url = `${import.meta.env.VITE_API_URL}/products`;
+          const resp = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const resul = await resp.json();
+          setProducts(resul);
+          setAuxProducts(resul);
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+        setCargando(false);
       }
-    }
-    if (sales.length === 0) {
-      getSalesAPI();
-    }
-
-  }, []);
-
-  useEffect(() => {
-    const getOrdersAPI = async () => {//obtener todos los pedidos de la API
-      setCargando(true);
-      try {
-        const url = `${import.meta.env.VITE_API_URL}/orders`;
-        const resp = await fetch(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const resul = await resp.json();
-        //console.log(resul)
-        const { success, orders: array } = resul;
-        if (success) {
-          setOrders(array);
+      if (products.length === 0) {
+        getProductsAPI();
+      }
+  
+    }, []);
+  
+    useEffect(() => {
+      const getClientsAPI = async () => {
+        setCargando(true);
+        try {
+          const url = `${import.meta.env.VITE_API_URL}/clients`;
+          const resp = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const resul = await resp.json();
+          setClients(resul);
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+        setCargando(false);
+      };
+  
+      if (clients.length === 0) {
+        getClientsAPI();
       }
-    }
-    if (orders.length === 0) {
-      getOrdersAPI();
-    }
-
-  }, []);
-
+    }, []);
+  
+    useEffect(() => {
+      const getSalesAPI = async () => {//obtener todas la ventas de la API
+        setCargando(true);
+        try {
+          const url = `${import.meta.env.VITE_API_URL}/sales`;
+          const resp = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const resul = await resp.json();
+  
+          const { success, sales: array } = resul;
+          if (success) {
+            setSales(array);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (sales.length === 0) {
+        getSalesAPI();
+      }
+  
+    }, []);
+  
+    useEffect(() => {
+      const getOrdersAPI = async () => {//obtener todos los pedidos de la API
+        setCargando(true);
+        try {
+          const url = `${import.meta.env.VITE_API_URL}/orders`;
+          const resp = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const resul = await resp.json();
+          //console.log(resul)
+          const { success, orders: array } = resul;
+          if (success) {
+            setOrders(array);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (orders.length === 0) {
+        getOrdersAPI();
+      }
+  
+    }, []);
+  */
   return (
     <BrowserRouter>
       <Routes>
@@ -186,6 +219,10 @@ function App() {
             token={token}
             setUser={setUser}
             setToken={setToken}
+            setProducts={setProducts}
+            setSales={setSales}
+            setOrders={setOrders}
+            setClients={setClients}
           />
         }>
           <Route element={<LayoutSales />} >
@@ -233,6 +270,10 @@ function App() {
             token={token}
             setUser={setUser}
             setToken={setToken}
+            setProducts={setProducts}
+            setSales={setSales}
+            setOrders={setOrders}
+            setClients={setClients}
           />
         }>
           <Route element={<LayoutOrders />} >
@@ -276,6 +317,10 @@ function App() {
             token={token}
             setUser={setUser}
             setToken={setToken}
+            setProducts={setProducts}
+            setSales={setSales}
+            setOrders={setOrders}
+            setClients={setClients}
           />
         }>
           <Route element={<LayoutProducts />} >
@@ -326,6 +371,10 @@ function App() {
             token={token}
             setUser={setUser}
             setToken={setToken}
+            setProducts={setProducts}
+            setSales={setSales}
+            setOrders={setOrders}
+            setClients={setClients}
           />
         }>
           <Route element={<LayoutClientes />} >

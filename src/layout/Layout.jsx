@@ -1,17 +1,20 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Spinner from '../components/Spinner';
 
-const Layout = ({ user, token, setUser, setToken }) => {
+const Layout = ({ user, token, setUser, setToken, setProducts, setSales, setOrders, setClients }) => {
     const [cargando, setCargando] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const urlActual = location.pathname;
-    if (!user.name) {
-        navigate('/login');//redireccionar
-    }
+
+    useEffect(() => {
+        if (!user.name) {
+            navigate('/login');//redireccionar
+        }
+    }, [])
 
     const Logout = async () => {
         setCargando(true);
@@ -22,11 +25,14 @@ const Layout = ({ user, token, setUser, setToken }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
-            }
-            );
+            });
             const resul = await resp.json();
             const { success } = resul;
             if (success) {//reiniciar valores
+                setProducts([]);
+                setSales([]);
+                setOrders([]);
+                setClients([]);
                 setUser({});
                 setToken('');
                 navigate('/login');//redireccionar

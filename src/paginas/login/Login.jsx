@@ -23,7 +23,6 @@ const Login = ({ user, setUser, setToken }) => {
     })
     const handleSubmit = async (valores) => {
         setCargando(true);
-
         const url = `${import.meta.env.VITE_API_URL}/login`;
 
         const resp = await fetch(url, {
@@ -34,10 +33,10 @@ const Login = ({ user, setUser, setToken }) => {
             }
         });
         const resul = await resp.json();
-        const { access_token, success, user } = resul;
+        const { access_token, success, user } = await resul;
         if (success) {
-            setToken(access_token);
             setUser(user);
+            setToken(access_token);
             navigate('/');//redireccionar
         } else {//mostra un mensaje por 5 seg
             setMessage('Los datos de acceso son incorrectos');
