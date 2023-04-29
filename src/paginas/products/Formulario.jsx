@@ -75,8 +75,8 @@ const Formulario = ({ token, product, products, setProducts }) => {
                 if (success) {
                     setRespAPI(true);
                     //guardar cliente en State
-                    const arrayProducts = [...products.products, valores];
-                    products.setProducts(arrayProducts);
+                    const arrayProducts = [...products, valores];
+                    setProducts(arrayProducts);
                     navigate('/products');//redireccionar
                 } else {
                     setIdValido(false);

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate, formatMoney } from '../../funtions/funtions';
 import ProductSale from './ProductSale';
 
-const ViewSale = ({ sales }) => {
+const ViewSale = ({ sales,user }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [sale, setSale] = useState({});
@@ -47,7 +47,7 @@ const ViewSale = ({ sales }) => {
 
             <p className="text-2xl text-gray-600 mt-4">
                 <span className="text-gray-800 uppercase font-bold ">Cajero: </span>
-                {user_name}
+                {user.name}
             </p>
 
             <p className="text-2xl text-gray-600 mt-4">

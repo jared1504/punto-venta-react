@@ -12,11 +12,17 @@ export const getHourFormat = hourString => {
 
 export const getDate = () => {//obtener la fecha actual YYYY-MM-DD
     const aux = new Date();
-    if (aux.getMonth() > 8) {
-        return aux.getFullYear() + "-" + (aux.getMonth() + 1) + "-" + (aux.getDate());
-    } else {
-        return aux.getFullYear() + "-0" + (aux.getMonth() + 1) + "-" + (aux.getDate());
+    let day = aux.getDate();
+    let moth = aux.getMonth() + 1;
+    if (day < 10) {
+        day = "0" + aux.getDate();
     }
+
+    if (moth < 10) {
+        moth = "0" + moth;
+    }
+    return(aux.getFullYear() + "-" + moth + "-" + day)
+
 }
 
 export const formatMoney = value => {//da formato a cantidades de dinero

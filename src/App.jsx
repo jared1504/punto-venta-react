@@ -41,7 +41,6 @@ function App() {
   const getData = async () => {//asignar valores al state
     let aux;
     if (products.length === 0) {
-      console.log('consulta')
       aux = await getProductsAPI(token);
       setProducts(aux);
     }
@@ -143,6 +142,7 @@ function App() {
               element={
                 <ViewSale
                   sales={sales}
+                  user={user}
                 />
               }
             />
